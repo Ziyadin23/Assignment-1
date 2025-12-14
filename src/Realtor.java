@@ -1,0 +1,19 @@
+public class Realtor {
+    private String name;
+
+    public Realtor(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void show() {
+        System.out.println("Realtor: " + name);
+    }
+}
