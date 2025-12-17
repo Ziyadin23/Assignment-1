@@ -14,7 +14,6 @@ public class RealEstateAgency {
     }
 
     public void show() {
-        System.out.println("Agency: " + agencyName);
+        System.out.println(agencyName);
     }
 }
-

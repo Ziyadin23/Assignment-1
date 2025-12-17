@@ -1,18 +1,18 @@
 public class Property {
-    private String address;
+    private String city;
     private double price;
 
-    public Property(String address, double price) {
-        this.address = address;
+    public Property(String city, double price) {
+        this.city = city;
         this.price = price;
     }
 
-    public String getAddress() {
-        return address;
+    public String getCity() {
+        return city;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setCity(String city) {
+        this.city = city;
     }
 
     public double getPrice() {
@@ -24,6 +24,7 @@ public class Property {
     }
 
     public void show() {
-        System.out.println(address + " - $" + price);
+        System.out.println(city + " " + price);
     }
 }
+

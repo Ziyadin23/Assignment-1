@@ -14,6 +14,6 @@ public class Realtor {
     }
 
     public void show() {
-        System.out.println("Realtor: " + name);
+        System.out.println(name);
     }
 }

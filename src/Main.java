@@ -4,13 +4,13 @@ public class Main {
         Property p1 = new Property("Astana", 120000);
         Property p2 = new Property("Almaty", 150000);
 
-        Realtor r = new Realtor("Arman");
-        RealEstateAgency a = new RealEstateAgency("KazEstate");
+        Realtor realtor = new Realtor("Arman");
+        RealEstateAgency agency = new RealEstateAgency("KazEstate");
 
         p1.show();
         p2.show();
-        r.show();
-        a.show();
+        realtor.show();
+        agency.show();
 
         if (p1.getPrice() > p2.getPrice()) {
             System.out.println("First property is more expensive");
@@ -19,3 +19,5 @@ public class Main {
         }
     }
 }
+
+
