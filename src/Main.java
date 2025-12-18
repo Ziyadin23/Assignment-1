@@ -1,7 +1,7 @@
 public class Main {
     public static void main(String[] args) {
 
-        Property p1 = new Property("Astana", 120000);
+        Property p1 = new Property("Pavlodar", 120000);
         Property p2 = new Property("Almaty", 150000);
 
         Realtor realtor = new Realtor("Arman");
@@ -17,6 +17,8 @@ public class Main {
         } else {
             System.out.println("Second property is more expensive");
         }
+
+        S
     }
 }
 
