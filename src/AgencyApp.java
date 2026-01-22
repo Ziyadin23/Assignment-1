@@ -136,7 +136,7 @@ public class AgencyApp extends JFrame {
             showError(ex);
         }
     }
-
+    // afaf
     private void clearInputs() {
         nameField.setText("");
         addressField.setText("");
