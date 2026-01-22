@@ -127,16 +127,17 @@ public class AgencyApp extends JFrame {
 
     private void reloadTable() {
         try {
-            List<Agency> agencies = dao.listAgencies();
+            // Use AgencyRecord to match DAO return type
+            List<AgencyRecord> agencies = dao.listAgencies();
             model.setRowCount(0);
-            for (Agency a : agencies) {
-                model.addRow(new Object[]{a.getId(), a.getName(), a.getAddress()});
+            for (AgencyRecord a : agencies) {
+                model.addRow(new Object[]{ a.getId(), a.getName(), a.getAddress() });
             }
         } catch (Exception ex) {
             showError(ex);
         }
     }
-    // afaf
+
     private void clearInputs() {
         nameField.setText("");
         addressField.setText("");
