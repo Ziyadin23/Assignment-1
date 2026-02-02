@@ -16,6 +16,24 @@ public class RealEstateAgencyDAO {
         }
     }
 
+    public AgencyRecord getAgencyById(int id) throws Exception {
+        String sql = "SELECT id, name, address FROM real_estate_agency WHERE id = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, id);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return new AgencyRecord(
+                            rs.getInt("id"),
+                            rs.getString("name"),
+                            rs.getString("address")
+                    );
+                }
+            }
+        }
+        return null;
+    }
+
     public List<AgencyRecord> listAgencies() throws Exception {
         String sql = "SELECT id, name, address FROM real_estate_agency ORDER BY id";
         List<AgencyRecord> list = new ArrayList<>();
