@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>REST API Test Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .section {
+            background: white;
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h2 {
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        .form-group {
+            margin: 15px 0;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        input[type="text"],
+        input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px 5px 5px 0;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        button.delete {
+            background-color: #e74c3c;
+        }
+        button.delete:hover {
+            background-color: #c0392b;
+        }
+        #response {
+            background-color: #ecf0f1;
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 10px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 14px;
+        }
+        .api-url {
+            color: #7f8c8d;
+            font-size: 12px;
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>REST API Test Page</h1>
+    <p style="text-align: center; color: #7f8c8d;">Server: http://localhost:7070</p>
+
+    <!-- Agencies Section -->
+    <div class="section">
+        <h2>Agencies</h2>
+        
+        <div class="form-group">
+            <button onclick="listAgencies()">List All Agencies</button>
+            <div class="api-url">GET /api/agencies</div>
+        </div>
+
+        <div class="form-group">
+            <label>Get Agency by ID:</label>
+            <input type="number" id="getAgencyId" placeholder="Enter agency ID">
+            <button onclick="getAgency()">Get Agency</button>
+            <div class="api-url">GET /api/agencies/{id}</div>
+        </div>
+
+        <div class="form-group">
+            <label>Create New Agency:</label>
+            <input type="text" id="createAgencyName" placeholder="Agency Name">
+            <input type="text" id="createAgencyAddress" placeholder="Agency Address">
+            <button onclick="createAgency()">Create Agency</button>
+            <div class="api-url">POST /api/agencies</div>
+        </div>
+
+        <div class="form-group">
+            <label>Update Agency:</label>
+            <input type="number" id="updateAgencyId" placeholder="Agency ID">
+            <input type="text" id="updateAgencyName" placeholder="New Name">
+            <input type="text" id="updateAgencyAddress" placeholder="New Address">
+            <button onclick="updateAgency()">Update Agency</button>
+            <div class="api-url">PUT /api/agencies/{id}</div>
+        </div>
+
+        <div class="form-group">
+            <label>Delete Agency:</label>
+            <input type="number" id="deleteAgencyId" placeholder="Agency ID">
+            <button class="delete" onclick="deleteAgency()">Delete Agency</button>
+            <div class="api-url">DELETE /api/agencies/{id}</div>
+        </div>
+    </div>
+
+    <!-- Realtors Section -->
+    <div class="section">
+        <h2>Realtors</h2>
+        
+        <div class="form-group">
+            <button onclick="listRealtors()">List All Realtors</button>
+            <div class="api-url">GET /api/realtors</div>
+        </div>
+
+        <div class="form-group">
+            <label>Get Realtor by ID:</label>
+            <input type="number" id="getRealtorId" placeholder="Enter realtor ID">
+            <button onclick="getRealtor()">Get Realtor</button>
+            <div class="api-url">GET /api/realtors/{id}</div>
+        </div>
+
+        <div class="form-group">
+            <label>Create New Realtor:</label>
+            <input type="text" id="createRealtorName" placeholder="Realtor Name">
+            <button onclick="createRealtor()">Create Realtor</button>
+            <div class="api-url">POST /api/realtors</div>
+        </div>
+
+        <div class="form-group">
+            <label>Update Realtor:</label>
+            <input type="number" id="updateRealtorId" placeholder="Realtor ID">
+            <input type="text" id="updateRealtorName" placeholder="New Name">
+            <button onclick="updateRealtor()">Update Realtor</button>
+            <div class="api-url">PUT /api/realtors/{id}</div>
+        </div>
+
+        <div class="form-group">
+            <label>Delete Realtor:</label>
+            <input type="number" id="deleteRealtorId" placeholder="Realtor ID">
+            <button class="delete" onclick="deleteRealtor()">Delete Realtor</button>
+            <div class="api-url">DELETE /api/realtors/{id}</div>
+        </div>
+    </div>
+
+    <!-- Response Section -->
+    <div class="section">
+        <h2>Response</h2>
+        <div id="response">No request made yet...</div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:7070/api';
+
+        function displayResponse(data) {
+            document.getElementById('response').textContent = JSON.stringify(data, null, 2);
+        }
+
+        function displayError(error) {
+            document.getElementById('response').textContent = 'Error: ' + error;
+        }
+
+        // Agency Functions
+        async function listAgencies() {
+            try {
+                const response = await fetch(`${API_BASE}/agencies`);
+                const data = await response.json();
+                displayResponse(data);
+            } catch (error) {
+                displayError(error.message);
+            }
+        }
+
+        async function getAgency() {
+            const id = document.getElementById('getAgencyId').value;
+            if (!id) {
+                alert('Please enter an agency ID');
+                return;
+            }
+            try {
+                const response = await fetch(`${API_BASE}/agencies/${id}`);
+                const data = await response.json();
+                displayResponse(data);
+            } catch (error) {
+                displayError(error.message);
+            }
+        }
+
+        async function createAgency() {
+            const name = document.getElementById('createAgencyName').value;
+            const address = document.getElementById('createAgencyAddress').value;
+            if (!name || !address) {
+                alert('Please enter both name and address');
+                return;
+            }
+            try {
+                const response = await fetch(`${API_BASE}/agencies`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, address })
+                });
+                const data = await response.json();
+                displayResponse(data);
+            } catch (error) {
+                displayError(error.message);
+            }
+        }
+
+        async function updateAgency() {
+            const id = document.getElementById('updateAgencyId').value;
+            const name = document.getElementById('updateAgencyName').value;
+            const address = document.getElementById('updateAgencyAddress').value;
+            if (!id || !name || !address) {
+                alert('Please enter ID, name, and address');
+                return;
+            }
+            try {
+                const response = await fetch(`${API_BASE}/agencies/${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, address })
+                });
+                const data = await response.json();
+                displayResponse(data);
+            } catch (error) {
+                displayError(error.message);
+            }
+        }
+
+        async function deleteAgency() {
+            const id = document.getElementById('deleteAgencyId').value;
+            if (!id) {
+                alert('Please enter an agency ID');
+                return;
+            }
+            if (!confirm('Are you sure you want to delete this agency?')) {
+                return;
+            }
+            try {
+                const response = await fetch(`${API_BASE}/agencies/${id}`, {
+                    method: 'DELETE'
+                });
+                const data = await response.json();
+                displayResponse(data);
+            } catch (error) {
+                displayError(error.message);
+            }
+        }
+
+        // Realtor Functions
+        async function listRealtors() {
+            try {
+                const response = await fetch(`${API_BASE}/realtors`);
+                const data = await response.json();
+                displayResponse(data);
+            } catch (error) {
+                displayError(error.message);
+            }
+        }
+
+        async function getRealtor() {
+            const id = document.getElementById('getRealtorId').value;
+            if (!id) {
+                alert('Please enter a realtor ID');
+                return;
+            }
+            try {
+                const response = await fetch(`${API_BASE}/realtors/${id}`);
+                const data = await response.json();
+                displayResponse(data);
+            } catch (error) {
+                displayError(error.message);
+            }
+        }
+
+        async function createRealtor() {
+            const name = document.getElementById('createRealtorName').value;
+            if (!name) {
+                alert('Please enter a name');
+                return;
+            }
+            try {
+                const response = await fetch(`${API_BASE}/realtors`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name })
+                });
+                const data = await response.json();
+                displayResponse(data);
+            } catch (error) {
+                displayError(error.message);
+            }
+        }
+
+        async function updateRealtor() {
+            const id = document.getElementById('updateRealtorId').value;
+            const name = document.getElementById('updateRealtorName').value;
+            if (!id || !name) {
+                alert('Please enter ID and name');
+                return;
+            }
+            try {
+                const response = await fetch(`${API_BASE}/realtors/${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name })
+                });
+                const data = await response.json();
+                displayResponse(data);
+            } catch (error) {
+                displayError(error.message);
+            }
+        }
+
+        async function deleteRealtor() {
+            const id = document.getElementById('deleteRealtorId').value;
+            if (!id) {
+                alert('Please enter a realtor ID');
+                return;
+            }
+            if (!confirm('Are you sure you want to delete this realtor?')) {
+                return;
+            }
+            try {
+                const response = await fetch(`${API_BASE}/realtors/${id}`, {
+                    method: 'DELETE'
+                });
+                const data = await response.json();
+                displayResponse(data);
+            } catch (error) {
+                displayError(error.message);
+            }
+        }
+    </script>
+</body>
+</html>

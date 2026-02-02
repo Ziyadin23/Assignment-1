@@ -15,6 +15,20 @@ public class RealtorDAO {
         }
     }
 
+    public RealtorRecord getRealtorById(int id) throws Exception {
+        String sql = "SELECT id, name FROM realtor WHERE id = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, id);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return new RealtorRecord(rs.getInt("id"), rs.getString("name"));
+                }
+            }
+        }
+        return null;
+    }
+
     public List<RealtorRecord> listRealtors() throws Exception {
         String sql = "SELECT id, name FROM realtor ORDER BY id";
         List<RealtorRecord> list = new ArrayList<>();
