@@ -2,18 +2,23 @@ import io.javalin.Javalin;
 import io.javalin.http.Context;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Map;
 
 public class RestApiServer {
     
+    private static final Logger logger = LoggerFactory.getLogger(RestApiServer.class);
     private static final Gson gson = new Gson();
     private static final RealEstateAgencyDAO agencyDAO = new RealEstateAgencyDAO();
     private static final RealtorDAO realtorDAO = new RealtorDAO();
 
     public static void main(String[] args) {
         Javalin app = Javalin.create(config -> {
+            // Note: CORS is configured for development/testing purposes
+            // In production, restrict to specific trusted origins
             config.plugins.enableCors(cors -> {
                 cors.add(it -> {
                     it.anyHost();
@@ -203,7 +208,7 @@ public class RestApiServer {
     }
 
     private static void handleError(Context ctx, Exception e) {
-        e.printStackTrace();
+        logger.error("Error processing request: {}", e.getMessage(), e);
         ctx.status(500).json(Map.of("success", false, "error", "Internal server error: " + e.getMessage()));
     }
 }
