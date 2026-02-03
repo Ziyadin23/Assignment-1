@@ -9,7 +9,16 @@ mvn dependency:copy-dependencies -DoutputDirectory=lib
 
 2. Compile the REST API server and dependencies:
 ```bash
-javac -cp "lib/*" -d target/classes src/DatabaseConnection.java src/AgencyRecord.java src/RealtorRecord.java src/RealEstateAgencyDAO.java src/RealtorDAO.java src/RestApiServer.java
+javac -cp "lib/*" -d target/classes src/DatabaseConnection.java src/AgencyRecord.java src/RealtorRecord.java src/PropertyRecord.java src/RealEstateAgencyDAO.java src/RealtorDAO.java src/PropertyDAO.java src/RestApiServer.java
+```
+
+## Database Setup
+
+1. Ensure PostgreSQL is running and update `DatabaseConnection.java` if your credentials differ.
+2. Run the schema script:
+
+```bash
+psql -U postgres -d postgres -f db/schema.sql
 ```
 
 ## Running the REST API Server
@@ -42,6 +51,16 @@ The server will start on `http://localhost:7070`
   - Request body: `{"name": "New Name"}`
 - `DELETE /api/realtors/{id}` - Delete realtor
 
+### Properties
+
+- `GET /api/properties` - List all properties
+- `GET /api/properties/{id}` - Get specific property by ID
+- `POST /api/properties` - Create new property
+  - Request body: `{"city": "City Name", "price": 120000}`
+- `PUT /api/properties/{id}` - Update property
+  - Request body: `{"city": "New City", "price": 150000}`
+- `DELETE /api/properties/{id}` - Delete property
+
 ## Testing
 
 You can test the API using:
@@ -71,6 +90,14 @@ curl -X PUT http://localhost:7070/api/agencies/1 \
 
 # Delete agency
 curl -X DELETE http://localhost:7070/api/agencies/1
+
+# List all properties
+curl http://localhost:7070/api/properties
+
+# Create new property
+curl -X POST http://localhost:7070/api/properties \
+  -H "Content-Type: application/json" \
+  -d '{"city": "Boston", "price": 250000}'
 ```
 
 ## Response Format
