@@ -14,6 +14,7 @@ public class RestApiServer {
     private static final Gson gson = new Gson();
     private static final RealEstateAgencyDAO agencyDAO = new RealEstateAgencyDAO();
     private static final RealtorDAO realtorDAO = new RealtorDAO();
+    private static final PropertyDAO propertyDAO = new PropertyDAO();
 
     public static void main(String[] args) {
         Javalin app = Javalin.create(config -> {
@@ -196,6 +197,99 @@ public class RestApiServer {
                     ctx.json(Map.of("success", true, "message", "Realtor deleted successfully"));
                 } else {
                     ctx.status(404).json(Map.of("success", false, "error", "Realtor not found"));
+                }
+            } catch (NumberFormatException e) {
+                ctx.status(400).json(Map.of("success", false, "error", "Invalid ID format"));
+            } catch (Exception e) {
+                handleError(ctx, e);
+            }
+        });
+
+        // Property Endpoints
+        app.get("/api/properties", ctx -> {
+            try {
+                List<PropertyRecord> properties = propertyDAO.listProperties();
+                ctx.json(properties);
+            } catch (Exception e) {
+                handleError(ctx, e);
+            }
+        });
+
+        app.get("/api/properties/{id}", ctx -> {
+            try {
+                int id = Integer.parseInt(ctx.pathParam("id"));
+                PropertyRecord property = propertyDAO.getPropertyById(id);
+                if (property != null) {
+                    ctx.json(property);
+                } else {
+                    ctx.status(404).json(Map.of("success", false, "error", "Property not found"));
+                }
+            } catch (NumberFormatException e) {
+                ctx.status(400).json(Map.of("success", false, "error", "Invalid ID format"));
+            } catch (Exception e) {
+                handleError(ctx, e);
+            }
+        });
+
+        app.post("/api/properties", ctx -> {
+            try {
+                PropertyRecord property = gson.fromJson(ctx.body(), PropertyRecord.class);
+
+                if (property.getCity() == null || property.getCity().trim().isEmpty()) {
+                    ctx.status(400).json(Map.of("success", false, "error", "City is required"));
+                    return;
+                }
+                if (property.getPrice() <= 0) {
+                    ctx.status(400).json(Map.of("success", false, "error", "Price must be greater than 0"));
+                    return;
+                }
+
+                int result = propertyDAO.insertProperty(property.getCity(), property.getPrice());
+                if (result > 0) {
+                    ctx.status(201).json(Map.of("success", true, "message", "Property created successfully"));
+                } else {
+                    ctx.status(500).json(Map.of("success", false, "error", "Failed to create property"));
+                }
+            } catch (Exception e) {
+                handleError(ctx, e);
+            }
+        });
+
+        app.put("/api/properties/{id}", ctx -> {
+            try {
+                int id = Integer.parseInt(ctx.pathParam("id"));
+                PropertyRecord property = gson.fromJson(ctx.body(), PropertyRecord.class);
+
+                if (property.getCity() == null || property.getCity().trim().isEmpty()) {
+                    ctx.status(400).json(Map.of("success", false, "error", "City is required"));
+                    return;
+                }
+                if (property.getPrice() <= 0) {
+                    ctx.status(400).json(Map.of("success", false, "error", "Price must be greater than 0"));
+                    return;
+                }
+
+                int result = propertyDAO.updateProperty(id, property.getCity(), property.getPrice());
+                if (result > 0) {
+                    ctx.json(Map.of("success", true, "message", "Property updated successfully"));
+                } else {
+                    ctx.status(404).json(Map.of("success", false, "error", "Property not found"));
+                }
+            } catch (NumberFormatException e) {
+                ctx.status(400).json(Map.of("success", false, "error", "Invalid ID format"));
+            } catch (Exception e) {
+                handleError(ctx, e);
+            }
+        });
+
+        app.delete("/api/properties/{id}", ctx -> {
+            try {
+                int id = Integer.parseInt(ctx.pathParam("id"));
+                int result = propertyDAO.deleteProperty(id);
+                if (result > 0) {
+                    ctx.json(Map.of("success", true, "message", "Property deleted successfully"));
+                } else {
+                    ctx.status(404).json(Map.of("success", false, "error", "Property not found"));
                 }
             } catch (NumberFormatException e) {
                 ctx.status(400).json(Map.of("success", false, "error", "Invalid ID format"));
