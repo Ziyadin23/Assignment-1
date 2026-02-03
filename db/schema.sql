@@ -1,0 +1,16 @@
+CREATE TABLE IF NOT EXISTS real_estate_agency (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    address VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS realtor (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS property_listing (
+    id SERIAL PRIMARY KEY,
+    city VARCHAR(120) NOT NULL,
+    price NUMERIC(12, 2) NOT NULL
+);

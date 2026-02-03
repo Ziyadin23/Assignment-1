@@ -163,6 +163,47 @@
         </div>
     </div>
 
+    <!-- Properties Section -->
+    <div class="section">
+        <h2>Properties</h2>
+
+        <div class="form-group">
+            <button onclick="listProperties()">List All Properties</button>
+            <div class="api-url">GET /api/properties</div>
+        </div>
+
+        <div class="form-group">
+            <label>Get Property by ID:</label>
+            <input type="number" id="getPropertyId" placeholder="Enter property ID">
+            <button onclick="getProperty()">Get Property</button>
+            <div class="api-url">GET /api/properties/{id}</div>
+        </div>
+
+        <div class="form-group">
+            <label>Create New Property:</label>
+            <input type="text" id="createPropertyCity" placeholder="City">
+            <input type="number" id="createPropertyPrice" placeholder="Price" step="0.01">
+            <button onclick="createProperty()">Create Property</button>
+            <div class="api-url">POST /api/properties</div>
+        </div>
+
+        <div class="form-group">
+            <label>Update Property:</label>
+            <input type="number" id="updatePropertyId" placeholder="Property ID">
+            <input type="text" id="updatePropertyCity" placeholder="New City">
+            <input type="number" id="updatePropertyPrice" placeholder="New Price" step="0.01">
+            <button onclick="updateProperty()">Update Property</button>
+            <div class="api-url">PUT /api/properties/{id}</div>
+        </div>
+
+        <div class="form-group">
+            <label>Delete Property:</label>
+            <input type="number" id="deletePropertyId" placeholder="Property ID">
+            <button class="delete" onclick="deleteProperty()">Delete Property</button>
+            <div class="api-url">DELETE /api/properties/{id}</div>
+        </div>
+    </div>
+
     <!-- Response Section -->
     <div class="section">
         <h2>Response</h2>
@@ -343,6 +384,93 @@
             }
             try {
                 const response = await fetch(`${API_BASE}/realtors/${id}`, {
+                    method: 'DELETE'
+                });
+                const data = await response.json();
+                displayResponse(data);
+            } catch (error) {
+                displayError(error.message);
+            }
+        }
+
+        // Property Functions
+        async function listProperties() {
+            try {
+                const response = await fetch(`${API_BASE}/properties`);
+                const data = await response.json();
+                displayResponse(data);
+            } catch (error) {
+                displayError(error.message);
+            }
+        }
+
+        async function getProperty() {
+            const id = document.getElementById('getPropertyId').value;
+            if (!id) {
+                alert('Please enter a property ID');
+                return;
+            }
+            try {
+                const response = await fetch(`${API_BASE}/properties/${id}`);
+                const data = await response.json();
+                displayResponse(data);
+            } catch (error) {
+                displayError(error.message);
+            }
+        }
+
+        async function createProperty() {
+            const city = document.getElementById('createPropertyCity').value;
+            const price = document.getElementById('createPropertyPrice').value;
+            if (!city || !price) {
+                alert('Please enter a city and price');
+                return;
+            }
+            try {
+                const response = await fetch(`${API_BASE}/properties`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ city, price: Number(price) })
+                });
+                const data = await response.json();
+                displayResponse(data);
+            } catch (error) {
+                displayError(error.message);
+            }
+        }
+
+        async function updateProperty() {
+            const id = document.getElementById('updatePropertyId').value;
+            const city = document.getElementById('updatePropertyCity').value;
+            const price = document.getElementById('updatePropertyPrice').value;
+            if (!id || !city || !price) {
+                alert('Please enter ID, city, and price');
+                return;
+            }
+            try {
+                const response = await fetch(`${API_BASE}/properties/${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ city, price: Number(price) })
+                });
+                const data = await response.json();
+                displayResponse(data);
+            } catch (error) {
+                displayError(error.message);
+            }
+        }
+
+        async function deleteProperty() {
+            const id = document.getElementById('deletePropertyId').value;
+            if (!id) {
+                alert('Please enter a property ID');
+                return;
+            }
+            if (!confirm('Are you sure you want to delete this property?')) {
+                return;
+            }
+            try {
+                const response = await fetch(`${API_BASE}/properties/${id}`, {
                     method: 'DELETE'
                 });
                 const data = await response.json();
