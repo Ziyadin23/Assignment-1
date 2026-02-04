@@ -1,8 +1,6 @@
 # REAL ESTATE AGENCY
 
-
-
-### this repository uses this kind of java things:
+### This repository uses the following Java features:
 
 - Classes & objects
 - Encapsulation (private fields + getters/setters)
@@ -19,16 +17,30 @@
 - Entry point (`public static void main(String[] args)`) and standard output (`System.out.println`, `System.out.printf`)
 - `final` fields for immutability (e.g., `id`, `agencyName`)
 - `instanceof` checks and `@Override` annotation
+- Default & static interface methods (`ValidationRules`)
+- Builder + Factory design patterns (see `Property.builder` and `PropertyFactory`)
 
-## Files in src
+## Packages in src
 
-- Property.java
-    - fields: id, city, price
-    - methods: get/set city and price, getId, getCommissionRate (3%), toString, equals, hashCode
+- `domain`
+    - `Property`, `Apartment`, `Realtor`, `RealEstateAgency`, `Agency`
+- `dto`
+    - `AgencyRecord`, `RealtorRecord`, `PropertyRecord`
+- `repository`
+    - CRUD interfaces
+- `repository.jdbc`
+    - JDBC implementations using `PreparedStatement`
+- `service`
+    - validation + business rules
+- `api`
+    - REST API server (Javalin)
+- `app`
+    - command-line demo + Swing UI
+- `config`, `exceptions`, `patterns`, `util`
 
-- Apartment.java
-    - extends Property
-    - overrides getCommissionRate to 2.5%
+## Notes:
+- This is just for practice.
+- I’m still learning Git/GitHub, so the structure is simple.
 
 - Realtor.java
     - field: name

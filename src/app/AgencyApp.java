@@ -1,10 +1,17 @@
+package app;
+
+import dto.AgencyRecord;
+import service.AgencyService;
+import service.DefaultAgencyService;
+import repository.jdbc.RealEstateAgencyDAO;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.List;
 
 public class AgencyApp extends JFrame {
-    private final RealEstateAgencyDAO dao = new RealEstateAgencyDAO();
+    private final AgencyService agencyService = new DefaultAgencyService(new RealEstateAgencyDAO());
 
     private final DefaultTableModel model = new DefaultTableModel(
             new Object[]{"ID", "Name", "Address"}, 0) {
@@ -74,7 +81,7 @@ public class AgencyApp extends JFrame {
                 return;
             }
             try {
-                dao.insertAgency(name, addr);
+                agencyService.createAgency(new AgencyRecord(name, addr));
                 clearInputs();
                 reloadTable();
             } catch (Exception ex) {
@@ -96,7 +103,7 @@ public class AgencyApp extends JFrame {
                 return;
             }
             try {
-                dao.updateAgency(id, name, addr);
+                agencyService.updateAgency(id, new AgencyRecord(name, addr));
                 reloadTable();
             } catch (Exception ex) {
                 showError(ex);
@@ -114,7 +121,7 @@ public class AgencyApp extends JFrame {
             if (confirm != JOptionPane.YES_OPTION) return;
 
             try {
-                dao.deleteAgency(id);
+                agencyService.deleteAgency(id);
                 clearInputs();
                 reloadTable();
             } catch (Exception ex) {
@@ -128,7 +135,7 @@ public class AgencyApp extends JFrame {
     private void reloadTable() {
         try {
             // Use AgencyRecord to match DAO return type
-            List<AgencyRecord> agencies = dao.listAgencies();
+            List<AgencyRecord> agencies = agencyService.listAgencies();
             model.setRowCount(0);
             for (AgencyRecord a : agencies) {
                 model.addRow(new Object[]{ a.getId(), a.getName(), a.getAddress() });
@@ -151,5 +158,4 @@ public class AgencyApp extends JFrame {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new AgencyApp().setVisible(true));
     }
-    // afaf
 }

@@ -1,3 +1,7 @@
+package dto;
+
+import java.util.Objects;
+
 public class PropertyRecord {
     private int id;
     private String city;
@@ -38,5 +42,23 @@ public class PropertyRecord {
 
     public void setPrice(double price) {
         this.price = price;
+    }
+
+    @Override
+    public String toString() {
+        return "PropertyRecord{id=" + id + ", city='" + city + "', price=" + price + "}";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof PropertyRecord)) return false;
+        PropertyRecord that = (PropertyRecord) o;
+        return id == that.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

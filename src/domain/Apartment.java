@@ -1,3 +1,5 @@
+package domain;
+
 // Inheritance: Apartment extends Property and overrides behavior
 public class Apartment extends Property {
     public Apartment(long id, String city, double price) {
