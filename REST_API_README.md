@@ -9,7 +9,7 @@ mvn dependency:copy-dependencies -DoutputDirectory=lib
 
 2. Compile the REST API server and dependencies:
 ```bash
-javac -cp "lib/*" -d target/classes src/DatabaseConnection.java src/AgencyRecord.java src/RealtorRecord.java src/PropertyRecord.java src/RealEstateAgencyDAO.java src/RealtorDAO.java src/PropertyDAO.java src/RestApiServer.java
+mvn -q -DskipTests package
 ```
 
 ## Database Setup
@@ -24,7 +24,7 @@ psql -U postgres -d postgres -f db/schema.sql
 ## Running the REST API Server
 
 ```bash
-java -cp "target/classes:lib/*" RestApiServer
+java -cp "target/classes:lib/*" api.RestApiServer
 ```
 
 The server will start on `http://localhost:7070`
