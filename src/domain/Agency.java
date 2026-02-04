@@ -1,3 +1,7 @@
+package domain;
+
+import java.util.Objects;
+
 public class Agency {
     private int id;
     private String name;
@@ -24,4 +28,22 @@ public class Agency {
 
     public String getAddress() { return address; }
     public void setAddress(String address) { this.address = address; }
+
+    @Override
+    public String toString() {
+        return "Agency{id=" + id + ", name='" + name + "', address='" + address + "'}";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Agency)) return false;
+        Agency agency = (Agency) o;
+        return id == agency.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }

@@ -1,22 +1,34 @@
+package repository.jdbc;
+
+import config.DatabaseConnection;
+import dto.AgencyRecord;
+import exceptions.DataAccessException;
+import repository.AgencyRepository;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RealEstateAgencyDAO {
+public class RealEstateAgencyDAO implements AgencyRepository {
 
-    public int insertAgency(String name, String address) throws Exception {
+    @Override
+    public int insertAgency(String name, String address) {
         String sql = "INSERT INTO real_estate_agency (name, address) VALUES (?, ?)";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, name);
             stmt.setString(2, address);
             return stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new DataAccessException("Failed to insert agency.", e);
         }
     }
 
-    public AgencyRecord getAgencyById(int id) throws Exception {
+    @Override
+    public AgencyRecord getAgencyById(int id) {
         String sql = "SELECT id, name, address FROM real_estate_agency WHERE id = ?";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -30,11 +42,14 @@ public class RealEstateAgencyDAO {
                     );
                 }
             }
+        } catch (SQLException e) {
+            throw new DataAccessException("Failed to read agency.", e);
         }
         return null;
     }
 
-    public List<AgencyRecord> listAgencies() throws Exception {
+    @Override
+    public List<AgencyRecord> listAgencies() {
         String sql = "SELECT id, name, address FROM real_estate_agency ORDER BY id";
         List<AgencyRecord> list = new ArrayList<>();
         try (Connection conn = DatabaseConnection.getConnection();
@@ -47,11 +62,14 @@ public class RealEstateAgencyDAO {
                         rs.getString("address")
                 ));
             }
+        } catch (SQLException e) {
+            throw new DataAccessException("Failed to list agencies.", e);
         }
         return list;
     }
 
-    public int updateAgency(int id, String name, String address) throws Exception {
+    @Override
+    public int updateAgency(int id, String name, String address) {
         String sql = "UPDATE real_estate_agency SET name = ?, address = ? WHERE id = ?";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -59,15 +77,20 @@ public class RealEstateAgencyDAO {
             stmt.setString(2, address);
             stmt.setInt(3, id);
             return stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new DataAccessException("Failed to update agency.", e);
         }
     }
 
-    public int deleteAgency(int id) throws Exception {
+    @Override
+    public int deleteAgency(int id) {
         String sql = "DELETE FROM real_estate_agency WHERE id = ?";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, id);
             return stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new DataAccessException("Failed to delete agency.", e);
         }
     }
 }
