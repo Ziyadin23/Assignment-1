@@ -48,7 +48,7 @@ public class RestApiServer {
             try {
                 List<AgencyRecord> agencies = agencyService.listAgencies();
                 ctx.json(agencies);
-            } catch (Exception e) {
+            } catch (RuntimeException e) {
                 handleError(ctx, e);
             }
         });
