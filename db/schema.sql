@@ -9,6 +9,14 @@ CREATE TABLE IF NOT EXISTS realtor (
     name VARCHAR(255) NOT NULL
 );
 
+-- Keep table name aligned with pgAdmin screenshot/user expectation.
+CREATE TABLE IF NOT EXISTS property (
+    id SERIAL PRIMARY KEY,
+    city VARCHAR(120) NOT NULL,
+    price NUMERIC(12, 2) NOT NULL
+);
+
+-- Legacy compatibility for older deployments that used property_listing.
 CREATE TABLE IF NOT EXISTS property_listing (
     id SERIAL PRIMARY KEY,
     city VARCHAR(120) NOT NULL,

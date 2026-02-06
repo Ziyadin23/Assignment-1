@@ -40,7 +40,7 @@ function updateStatus(connected, message) {
 }
 
 // Tab Management
-function showTab(tabName) {
+function showTab(tabName, button) {
     // Hide all tabs
     document.querySelectorAll('.tab-content').forEach(tab => {
         tab.classList.remove('active');
@@ -51,7 +51,9 @@ function showTab(tabName) {
     
     // Show selected tab
     document.getElementById(`${tabName}-tab`).classList.add('active');
-    event.target.classList.add('active');
+    if (button) {
+        button.classList.add('active');
+    }
     
     currentTab = tabName;
     
