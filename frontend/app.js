@@ -360,7 +360,11 @@ async function loadProperties() {
     
     try {
         const response = await fetch(`${API_BASE_URL}/properties`);
-        if (!response.ok) throw new Error('Failed to load properties');
+        if (!response.ok) {
+            const errorBody = await response.text();
+            console.error('Failed to load properties - Status:', response.status, 'Response:', errorBody);
+            throw new Error(`Failed to load properties (${response.status}): ${errorBody}`);
+        }
         
         const properties = await response.json();
         
@@ -388,6 +392,7 @@ async function loadProperties() {
         `).join('');
         
     } catch (error) {
+        console.error('Error in loadProperties:', error);
         listContainer.innerHTML = `
             <div class="empty-state">
                 <h3>❌ Error loading properties</h3>
@@ -419,6 +424,8 @@ async function saveProperty(event) {
     
     const data = { city, price };
     
+    console.log('Saving property:', data);
+    
     try {
         let response;
         if (id) {
@@ -435,16 +442,22 @@ async function saveProperty(event) {
             });
         }
         
+        console.log('Response status:', response.status);
+        
         const result = await response.json();
+        console.log('Response body:', result);
         
         if (response.ok && result.success) {
             showToast(id ? 'Property updated successfully' : 'Property created successfully', 'success');
             cancelPropertyForm();
             loadProperties();
         } else {
-            showToast(result.error || 'Operation failed', 'error');
+            const errorMsg = result.error || 'Operation failed';
+            console.error('Operation failed:', errorMsg);
+            showToast(errorMsg, 'error');
         }
     } catch (error) {
+        console.error('Error saving property:', error);
         showToast('Error saving property: ' + error.message, 'error');
     }
 }
@@ -452,7 +465,10 @@ async function saveProperty(event) {
 async function editProperty(id) {
     try {
         const response = await fetch(`${API_BASE_URL}/properties/${id}`);
+        console.log('Edit property response status:', response.status);
+        
         const property = await response.json();
+        console.log('Edit property response body:', property);
         
         if (response.ok) {
             document.getElementById('propertyFormTitle').textContent = 'Edit Property';
@@ -461,9 +477,12 @@ async function editProperty(id) {
             document.getElementById('propertyPrice').value = property.price;
             document.getElementById('propertyForm').style.display = 'block';
         } else {
-            showToast(property.error || 'Failed to load property', 'error');
+            const errorMsg = property.error || 'Failed to load property';
+            console.error('Failed to load property:', errorMsg);
+            showToast(errorMsg, 'error');
         }
     } catch (error) {
+        console.error('Error loading property:', error);
         showToast('Error loading property: ' + error.message, 'error');
     }
 }
@@ -478,15 +497,21 @@ async function deleteProperty(id) {
             method: 'DELETE'
         });
         
+        console.log('Delete property response status:', response.status);
+        
         const result = await response.json();
+        console.log('Delete property response body:', result);
         
         if (response.ok && result.success) {
             showToast('Property deleted successfully', 'success');
             loadProperties();
         } else {
-            showToast(result.error || 'Failed to delete property', 'error');
+            const errorMsg = result.error || 'Failed to delete property';
+            console.error('Failed to delete property:', errorMsg);
+            showToast(errorMsg, 'error');
         }
     } catch (error) {
+        console.error('Error deleting property:', error);
         showToast('Error deleting property: ' + error.message, 'error');
     }
 }
