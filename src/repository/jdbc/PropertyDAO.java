@@ -51,6 +51,7 @@ public class PropertyDAO implements PropertyRepository {
     @Override
     public int insertProperty(String city, double price) {
         try (Connection conn = DatabaseConnection.getConnection()) {
+            ensurePropertyTableExists(conn);
             String tableName = resolvePropertyTable(conn);
             String sql = "INSERT INTO " + tableName + " (city, price) VALUES (?, ?)";
             try (PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -66,6 +67,7 @@ public class PropertyDAO implements PropertyRepository {
     @Override
     public PropertyRecord getPropertyById(int id) {
         try (Connection conn = DatabaseConnection.getConnection()) {
+            ensurePropertyTableExists(conn);
             String tableName = resolvePropertyTable(conn);
             String sql = "SELECT id, city, price FROM " + tableName + " WHERE id = ?";
             try (PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -90,6 +92,7 @@ public class PropertyDAO implements PropertyRepository {
     public List<PropertyRecord> listProperties() {
         List<PropertyRecord> list = new ArrayList<>();
         try (Connection conn = DatabaseConnection.getConnection()) {
+            ensurePropertyTableExists(conn);
             String tableName = resolvePropertyTable(conn);
             String sql = "SELECT id, city, price FROM " + tableName + " ORDER BY id";
             try (PreparedStatement stmt = conn.prepareStatement(sql);
@@ -111,6 +114,7 @@ public class PropertyDAO implements PropertyRepository {
     @Override
     public int updateProperty(int id, String city, double price) {
         try (Connection conn = DatabaseConnection.getConnection()) {
+            ensurePropertyTableExists(conn);
             String tableName = resolvePropertyTable(conn);
             String sql = "UPDATE " + tableName + " SET city = ?, price = ? WHERE id = ?";
             try (PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -127,6 +131,7 @@ public class PropertyDAO implements PropertyRepository {
     @Override
     public int deleteProperty(int id) {
         try (Connection conn = DatabaseConnection.getConnection()) {
+            ensurePropertyTableExists(conn);
             String tableName = resolvePropertyTable(conn);
             String sql = "DELETE FROM " + tableName + " WHERE id = ?";
             try (PreparedStatement stmt = conn.prepareStatement(sql)) {
