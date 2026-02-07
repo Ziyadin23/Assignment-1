@@ -14,12 +14,11 @@ import java.util.List;
 
 public class RealtorDAO implements RealtorRepository {
 
-    private static final String CREATE_REALTOR_TABLE_SQL = """
-            CREATE TABLE IF NOT EXISTS realtor (
-                id SERIAL PRIMARY KEY,
-                name VARCHAR(255) NOT NULL
-            )
-            """;
+    private static final String CREATE_REALTOR_TABLE_SQL = 
+            "CREATE TABLE IF NOT EXISTS realtor (" +
+            "id SERIAL PRIMARY KEY, " +
+            "name VARCHAR(255) NOT NULL" +
+            ")";
 
     private void ensureRealtorTableExists(Connection conn) throws SQLException {
         try (PreparedStatement stmt = conn.prepareStatement(CREATE_REALTOR_TABLE_SQL)) {
