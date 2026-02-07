@@ -245,6 +245,14 @@ This project demonstrates:
 
 See [PROJECT_DEFENSE_SUMMARY.md](PROJECT_DEFENSE_SUMMARY.md) for detailed defense preparation.
 
+## ✅ Recent Fixes
+
+### Java 11 Compatibility (2026-02-07)
+- **Issue:** Backend failed to compile due to Java 15 text blocks syntax
+- **Fix:** Replaced text block syntax with Java 11-compatible string concatenation
+- **Files:** PropertyDAO.java, RealtorDAO.java
+- **Status:** ✅ Resolved - All compilation errors fixed
+
 ## 🐛 Known Issues (Minor, Non-Blocking)
 
 - Foreign key relationships between tables could be added
