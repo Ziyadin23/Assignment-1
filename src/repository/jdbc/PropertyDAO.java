@@ -14,13 +14,12 @@ import java.util.List;
 
 public class PropertyDAO implements PropertyRepository {
 
-    private static final String CREATE_PROPERTY_TABLE_SQL = """
-            CREATE TABLE IF NOT EXISTS property (
-                id SERIAL PRIMARY KEY,
-                city VARCHAR(120) NOT NULL,
-                price NUMERIC(12, 2) NOT NULL
-            )
-            """;
+    private static final String CREATE_PROPERTY_TABLE_SQL = 
+            "CREATE TABLE IF NOT EXISTS property (" +
+            "id SERIAL PRIMARY KEY, " +
+            "city VARCHAR(120) NOT NULL, " +
+            "price NUMERIC(12, 2) NOT NULL" +
+            ")";
 
     private static final String PROPERTY_TABLE = "property";
     private static final String LEGACY_PROPERTY_TABLE = "property_listing";
